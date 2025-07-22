@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "license": "MIT",
+  "author": "Vladimir V",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
@@ -18,8 +20,6 @@
     "lint:check": "eslint . --ext .ts --max-warnings 0"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "@prisma/client": "^6.12.0",
