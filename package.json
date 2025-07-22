@@ -1,6 +1,6 @@
 {
   "name": "nodejs_express_prisma_postgresql_boilerplate",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "license": "MIT",
@@ -19,7 +19,12 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "lint:check": "eslint . --ext .ts --max-warnings 0"
   },
-  "keywords": [],
+  "keywords": [
+    "nodejs",
+    "express",
+    "postgresql",
+    "prisma"
+  ],
   "type": "commonjs",
   "dependencies": {
     "@prisma/client": "^6.12.0",
