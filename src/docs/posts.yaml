@@ -1,0 +1,174 @@
+paths:
+  /api/posts:
+    get:
+      summary: Get all posts
+      tags: [Posts]
+      responses:
+        '200':
+          description: List of all posts
+    post:
+      summary: Create new post
+      tags: [Posts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - authorId
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                authorId:
+                  type: string
+      responses:
+        '201':
+          description: Post created
+        '400':
+          description: Invalid input
+  /api/posts/published:
+    get:
+      summary: Get published posts only
+      tags: [Posts]
+      responses:
+        '200':
+          description: List of published posts
+  /api/posts/search:
+    get:
+      summary: Search posts
+      tags: [Posts]
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Search query
+      responses:
+        '200':
+          description: List of posts matching the search
+  /api/posts/{id}:
+    get:
+      summary: Get post by ID
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Post ID
+      responses:
+        '200':
+          description: Post data
+        '404':
+          description: Post not found
+    put:
+      summary: Update post
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Post ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Post updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Post not found
+    delete:
+      summary: Delete post
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Post ID
+      responses:
+        '200':
+          description: Post deleted
+        '404':
+          description: Post not found
+  /api/posts/{id}/publish:
+    patch:
+      summary: Publish post
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Post ID
+      responses:
+        '200':
+          description: Post published
+        '404':
+          description: Post not found
+  /api/posts/{id}/unpublish:
+    patch:
+      summary: Unpublish post
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Post ID
+      responses:
+        '200':
+          description: Post unpublished
+        '404':
+          description: Post not found
+  /api/posts/author/{authorId}:
+    get:
+      summary: Get posts by author
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: authorId
+          required: true
+          schema:
+            type: string
+          description: Author ID
+      responses:
+        '200':
+          description: List of posts by author
+  /api/posts/author/{authorId}/published:
+    get:
+      summary: Get published posts by author
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: authorId
+          required: true
+          schema:
+            type: string
+          description: Author ID
+      responses:
+        '200':
+          description: List of published posts by author 
