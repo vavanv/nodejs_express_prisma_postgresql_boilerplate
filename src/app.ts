@@ -33,10 +33,20 @@ app.get('/api/v1', (_: Request, res: Response) => {
 app.use('/health', healthRouter);
 app.use('/api/v1', apiRoutes);
 
+// Catch-all 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: 'Not found', path: req.originalUrl });
+});
+
 // Error handling middleware
 app.use((err: Error, _req: Request, res: Response) => {
   logger.error(err.stack || err.message);
-  res.status(500).json({ error: 'Something went wrong!' });
+  console.log('Express error handler:', err);
+  res.status(500).json({
+    error: 'Something went wrong!',
+    message: err.message,
+    stack: err.stack,
+  });
 });
 
 export { app, prisma };

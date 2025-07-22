@@ -44,13 +44,11 @@ describe('Posts Controller (integration, prisma mocked)', () => {
   it('should create a post', async () => {
     (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: mockUserId });
     (prisma.post.create as jest.Mock).mockResolvedValue(mockPost);
-    const res = await request(app)
-      .post('/api/posts')
-      .send({
-        title: mockPost.title,
-        content: mockPost.content,
-        authorId: mockUserId,
-      });
+    const res = await request(app).post('/api/v1/posts').send({
+      title: mockPost.title,
+      content: mockPost.content,
+      authorId: mockUserId,
+    });
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('title', mockPost.title);
   });
@@ -58,28 +56,28 @@ describe('Posts Controller (integration, prisma mocked)', () => {
   it('should return 400 for missing title', async () => {
     (prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: mockUserId });
     const res = await request(app)
-      .post('/api/posts')
+      .post('/api/v1/posts')
       .send({ content: 'No title', authorId: mockUserId });
     expect(res.status).toBe(400);
   });
 
   it('should get all posts', async () => {
     (prisma.post.findMany as jest.Mock).mockResolvedValue([mockPost]);
-    const res = await request(app).get('/api/posts');
+    const res = await request(app).get('/api/v1/posts');
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
 
   it('should get post by id', async () => {
     (prisma.post.findUnique as jest.Mock).mockResolvedValue(mockPost);
-    const res = await request(app).get(`/api/posts/${mockPostId}`);
+    const res = await request(app).get(`/api/v1/posts/${mockPostId}`);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('id', mockPostId);
   });
 
   it('should return 404 for non-existent post', async () => {
     (prisma.post.findUnique as jest.Mock).mockResolvedValue(null);
-    const res = await request(app).get('/api/posts/nonexistentid');
+    const res = await request(app).get('/api/v1/posts/nonexistentid');
     expect(res.status).toBe(404);
   });
 
@@ -91,7 +89,7 @@ describe('Posts Controller (integration, prisma mocked)', () => {
       updatedAt: now,
     });
     const res = await request(app)
-      .put(`/api/posts/${mockPostId}`)
+      .put(`/api/v1/posts/${mockPostId}`)
       .send({ title: 'Updated Integration Post' });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('title', 'Updated Integration Post');
@@ -100,7 +98,7 @@ describe('Posts Controller (integration, prisma mocked)', () => {
   it('should return 400 for invalid title on update', async () => {
     (prisma.post.findUnique as jest.Mock).mockResolvedValue({ ...mockPost });
     const res = await request(app)
-      .put(`/api/posts/${mockPostId}`)
+      .put(`/api/v1/posts/${mockPostId}`)
       .send({ title: '' });
     expect(res.status).toBe(400);
   });
@@ -115,7 +113,7 @@ describe('Posts Controller (integration, prisma mocked)', () => {
       published: true,
       updatedAt: now,
     });
-    const res = await request(app).patch(`/api/posts/${mockPostId}/publish`);
+    const res = await request(app).patch(`/api/v1/posts/${mockPostId}/publish`);
     expect([200, 400]).toContain(res.status);
   });
 
@@ -126,13 +124,15 @@ describe('Posts Controller (integration, prisma mocked)', () => {
       published: false,
       updatedAt: now,
     });
-    const res = await request(app).patch(`/api/posts/${mockPostId}/unpublish`);
+    const res = await request(app).patch(
+      `/api/v1/posts/${mockPostId}/unpublish`
+    );
     expect(res.status).toBe(200);
   });
 
   it('should search posts', async () => {
     (prisma.post.findMany as jest.Mock).mockResolvedValue([mockPost]);
-    const res = await request(app).get('/api/posts/search?q=Integration');
+    const res = await request(app).get('/api/v1/posts/search?q=Integration');
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
@@ -140,7 +140,7 @@ describe('Posts Controller (integration, prisma mocked)', () => {
   it('should delete post', async () => {
     (prisma.post.findUnique as jest.Mock).mockResolvedValue({ ...mockPost });
     (prisma.post.delete as jest.Mock).mockResolvedValue(mockPost);
-    const res = await request(app).delete(`/api/posts/${mockPostId}`);
+    const res = await request(app).delete(`/api/v1/posts/${mockPostId}`);
     expect([200, 404]).toContain(res.status);
     if (res.status === 200) {
       expect(res.body).toHaveProperty('message');
@@ -149,7 +149,7 @@ describe('Posts Controller (integration, prisma mocked)', () => {
 
   it('should return 404 for deleted post', async () => {
     (prisma.post.findUnique as jest.Mock).mockResolvedValue(null);
-    const res = await request(app).get(`/api/posts/${mockPostId}`);
+    const res = await request(app).get(`/api/v1/posts/${mockPostId}`);
     expect(res.status).toBe(404);
   });
 });

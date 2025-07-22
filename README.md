@@ -68,7 +68,7 @@ A scalable, production-ready RESTful API built with **Node.js**, **Express**, **
 
 ## 📚 API Documentation
 
-- **Swagger UI:** [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+- **Swagger UI:** [http://localhost:3000/api/v1-docs](http://localhost:3000/api/v1-docs)
 - **YAML Source:** See `src/docs/` for OpenAPI definitions.
 
 ---
@@ -135,7 +135,8 @@ This will create example users and posts as defined in `src/prisma/seed.ts`.
   ```bash
   npm test
   ```
-- **Test files:** Located in `src/_test_/`
+- **Test files:** Located in `src/_test_/` and `src/routes/_test_/`
+- **API path for tests:** All test requests must use the `/api/v1/` prefix (e.g., `/api/v1/users`, `/api/v1/posts`).
 - **Coverage:** Add more tests for controllers/services as needed.
 
 ---

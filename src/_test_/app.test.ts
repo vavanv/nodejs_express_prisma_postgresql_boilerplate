@@ -3,8 +3,8 @@ import { app } from '../app';
 import express, { Request, Response, NextFunction } from 'express';
 
 describe('App', () => {
-  it('should return API info for GET /api', async () => {
-    const res = await request(app).get('/api');
+  it('should return API info for GET /api/v1', async () => {
+    const res = await request(app).get('/api/v1');
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('message');
     expect(res.body).toHaveProperty('version');
@@ -16,11 +16,13 @@ describe('App', () => {
       throw new Error('Test error');
     });
     // Add error handler
-    errorApp.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-      res.status(500).json({ error: err.message });
-    });
+    errorApp.use(
+      (err: Error, _req: Request, res: Response, _next: NextFunction) => {
+        res.status(500).json({ error: err.message });
+      }
+    );
     const res = await request(errorApp).get('/error');
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty('error', 'Test error');
   });
-}); 
+});
