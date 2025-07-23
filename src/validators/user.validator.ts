@@ -1,40 +1,36 @@
-import { z } from 'zod';
+import * as yup from 'yup';
 
-// Restore all Zod schemas at the top to avoid circular import issues
-export const userResponseSchema = z.object({
-  id: z.string(),
-  email: z.string().email(),
-  name: z.string().nullable().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+export const createUserSchema = yup.object({
+  email: yup.string().email().required(),
+  name: yup.string().optional(),
 });
 
-export const userListResponseSchema = z.array(userResponseSchema);
-
-export const userIdParamSchema = z.object({
-  id: z.string().uuid().or(z.string().min(1)), // Use uuid() if IDs are UUIDs, else min(1)
+export const updateUserSchema = yup.object({
+  email: yup.string().email('Invalid email address').optional(),
+  name: yup.string().optional(),
 });
 
-export const userListQuerySchema = z.object({
-  page: z
+export const userIdParamSchema = yup.object({
+  id: yup.string().required(), // Use .uuid() if IDs are UUIDs
+});
+
+export const userListQuerySchema = yup.object({
+  page: yup
     .string()
-    .regex(/^[0-9]+$/)
+    .matches(/^[0-9]+$/)
     .optional(),
-  limit: z
+  limit: yup
     .string()
-    .regex(/^[0-9]+$/)
+    .matches(/^[0-9]+$/)
     .optional(),
 });
 
-export const createUserSchema = z.object({
-  email: z.string().email(),
-  name: z.string().optional(),
+export const userResponseSchema = yup.object({
+  id: yup.string().required(),
+  email: yup.string().email().required(),
+  name: yup.string().nullable().optional(),
+  createdAt: yup.string().required(),
+  updatedAt: yup.string().required(),
 });
 
-export const updateUserSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }).optional(),
-  name: z.string().optional(),
-});
-
-export type CreateUserInput = z.infer<typeof createUserSchema>;
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export const userListResponseSchema = yup.array().of(userResponseSchema);

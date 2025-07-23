@@ -1,18 +1,22 @@
-import { ZodSchema } from 'zod';
+import { AnySchema } from 'yup';
 import { Response } from 'express';
 
 export function sendValidated<T>(
   res: Response,
-  schema: ZodSchema<T>,
+  schema: AnySchema,
   data: unknown,
   status = 200
 ) {
-  const result = schema.safeParse(data);
-  if (!result.success) {
+  try {
+    const validated = schema.validateSync(data, {
+      abortEarly: false,
+      stripUnknown: true,
+    });
+    return res.status(status).json(validated);
+  } catch (err: any) {
     return res.status(500).json({
       error: 'Internal server error: Response validation failed',
-      details: result.error.issues,
+      details: err.errors || err.message,
     });
   }
-  return res.status(status).json(result.data);
 }
